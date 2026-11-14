@@ -1,5 +1,7 @@
 # AI Agent Security Lab
 
+[![Foundation checks](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml)
+
 **Application Security portfolio project: tenant isolation, object authorization, and deterministic security regression testing for a future AI-enabled support API.**
 
 The current milestone implements the security foundation before adding a model. Five synthetic identities across two tenants can create conversations, append user messages, and read only their own history. Authorization is enforced in the repository so future agent tools must obey the same rules.
@@ -82,6 +84,8 @@ docker compose down
 ```
 
 Compose publishes only host loopback and defines a non-root, read-only container with restricted capabilities and resources. The [CI workflow](.github/workflows/ci.yml) runs code checks, live HTTP smoke tests, and a container health check. The [publication record](docs/evidence/publication.md) distinguishes actual runs from definitions; a workflow file alone is not passing CI evidence.
+
+The bridge network permits outbound traffic. Loopback publication limits incoming host access; it is not an outbound firewall. There are no external model or tool integrations in this milestone.
 
 ## Scope and limitations
 

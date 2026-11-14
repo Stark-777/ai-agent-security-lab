@@ -21,4 +21,4 @@ services:
       - lab
 networks:
   lab:
-    internal: true
+    driver: bridge

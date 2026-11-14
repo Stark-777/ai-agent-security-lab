@@ -54,7 +54,9 @@ References: [Fastify logging](https://fastify.dev/docs/latest/Reference/Logging/
 
 ## D11 — Host and container boundaries
 
-Native default binding is fixed to `127.0.0.1`; arbitrary `HOST` environment variables do not change it. `LAB_BIND_MODE=container` explicitly switches to `0.0.0.0` for container networking. This flag is an operator choice, not a container-detection guarantee. Compose publishes to host loopback, uses an internal network, drops capabilities, restricts resources, and enables a read-only filesystem. Validate these definitions in Docker before claiming isolation. The Docker image is pinned by version tag, not immutable digest; CI actions currently use major tags. Digest/SHA pinning and automated maintenance remain Phase 8 supply-chain work.
+Native default binding is fixed to `127.0.0.1`; arbitrary `HOST` environment variables do not change it. `LAB_BIND_MODE=container` explicitly switches to `0.0.0.0` for container networking. This flag is an operator choice, not a container-detection guarantee. Compose publishes to host loopback, drops capabilities, restricts resources, and enables a read-only filesystem. The original internal-only network produced a healthy container but an unreachable host port in the first hosted CI run. Publication verification changed it to a standard bridge while retaining the loopback binding. Outbound network access is permitted; this is not an egress-isolation guarantee. Revisit egress control before introducing vulnerable external-capable tools.
+
+The Docker image is pinned by version tag, not immutable digest. During publication, checkout and setup-node were updated from deprecated-runtime major tags to verified official v6 commit hashes. Container digest pinning and automated dependency maintenance remain Phase 8 work.
 
 ## D12 — Record the development dependency advisory without forced downgrades
 

@@ -9,19 +9,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run check
       - run: npm run smoke
-      - name: Build and start isolated container
+      - name: Build and start local container
         run: docker compose up --build --wait --wait-timeout 90
       - name: Verify host-facing health endpoint
         run: |
+          test "$(docker compose port api 3000)" = "127.0.0.1:3000"
           node --input-type=module -e "import assert from 'node:assert/strict'; const r=await fetch('http://127.0.0.1:3000/health'); assert.equal(r.status,200); assert.deepEqual(await r.json(),{status:'ok'});"
+      - name: Container diagnostics on failure
+        if: failure()
+        run: |
+          docker compose ps
+          docker compose logs --no-color
       - name: Stop container
         if: always()
         run: docker compose down
