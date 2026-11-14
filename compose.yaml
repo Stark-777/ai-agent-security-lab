@@ -1,0 +1,24 @@
+services:
+  api:
+    build: .
+    ports:
+      - '127.0.0.1:3000:3000'
+    environment:
+      LAB_BIND_MODE: container
+      LOG_LEVEL: info
+      PORT: '3000'
+      LAB_AUTH_MODE: '${LAB_AUTH_MODE:-disabled}'
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    pids_limit: 64
+    mem_limit: 256m
+    cpus: 1
+    networks:
+      - lab
+networks:
+  lab:
+    internal: true

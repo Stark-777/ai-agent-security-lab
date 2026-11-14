@@ -1,0 +1,27 @@
+name: Foundation checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run smoke
+      - name: Build and start isolated container
+        run: docker compose up --build --wait --wait-timeout 90
+      - name: Verify host-facing health endpoint
+        run: |
+          node --input-type=module -e "import assert from 'node:assert/strict'; const r=await fetch('http://127.0.0.1:3000/health'); assert.equal(r.status,200); assert.deepEqual(await r.json(),{status:'ok'});"
+      - name: Stop container
+        if: always()
+        run: docker compose down
