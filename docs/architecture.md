@@ -1,5 +1,7 @@
 # Proposed architecture and data flow
 
+Phase 4: a separate CLI composition swaps only refund-request authorization and opens no listener. `RefundRequestLab` owns a disposable synthetic queue; default HTTP tools remain hardened. Manager requests now create pending entries, capped at 20, and still cannot execute payments. See [F001](findings/F001-broken-tool-authorization.md).
+
 Phase 3 local update: `src/agent.ts` adds the model adapter, orchestrator, constrained registry, tenant-scoped synthetic lookups, and audit decisions. `POST /v1/conversations/:id/agent` authorizes ownership before execution and returns answer/trace without persisting a turn. No RAG ingestion or refund mutation exists. The earlier implementation descriptions below are historical Phase 2 context; see [Phase 3](evidence/phase-3.md) for current guarantees.
 
 Target design with Phases 1–2 implemented: HTTP foundation, local fixture authentication, server-derived actor context, and a tenant/owner-scoped conversation repository. Agent, tools, retrieval, customer/document repositories, and action audit trails below remain unimplemented.

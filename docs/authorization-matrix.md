@@ -1,5 +1,7 @@
 # Authorization matrix
 
+Phase 4 refinement: hardened billing-manager refund proposals create a pending synthetic queue entry and return `confirmation_required`; support agents remain denied. No payment executes. The intentionally vulnerable CLI allows support-agent queue creation for comparison; the HTTP composition has no vulnerable startup/request option.
+
 Phase 3 update: owner-only agent preview is implemented. Both roles may read same-tenant synthetic customer records and tenant-internal documents. Restricted and cross-tenant objects yield `not_found` tool outcomes. Support-agent refunds yield `denied`; managers receive `confirmation_required` only for their tenant's invoice. No role can execute a refund yet. These tool outcomes appear inside a successful agent response; they are not HTTP authorization status codes. History/ownership checks retain their prior HTTP semantics.
 
 Phase 2 implements health, identity inspection, conversation creation, history reads, and user-message append. Tool actions, restricted document access, and ingestion policies below remain design requirements. Both tenants use the same conversation rules. No role has cross-tenant authority. Appending a message stores user text only; agent execution starts in Phase 3.

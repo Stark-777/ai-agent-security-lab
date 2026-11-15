@@ -1,5 +1,7 @@
 # Finding records
 
+Implemented local finding: [F001 — refund-request role authorization](F001-broken-tool-authorization.md). The original planning notes below predate that reproduction.
+
 No vulnerabilities have been implemented or reproduced yet. H1–H3 are design hypotheses, not findings.
 
 Create one concise Markdown record per demonstrated root cause, with related attack narratives linked where they share a defect. Use stable IDs such as `F001-broken-tool-authorization.md`.

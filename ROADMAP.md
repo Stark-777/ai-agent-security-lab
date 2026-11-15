@@ -1,5 +1,7 @@
 # Milestone plan
 
+2026-11-15: Phase 3 published as `06c392d`; Phase 4 local CLI lab completed with 85 passing tests. Its impact is unauthorized refund-request creation, not payment execution; see [scope and evidence](docs/evidence/phase-4.md). Phase 5 has not started.
+
 Local update (2026-11-14): Phase 3 implemented; see [Phase 3](docs/evidence/phase-3.md). Phase 4 has not started. The historical status below describes the published Phase 2 milestone.
 
 Each phase ends with changed files, verified commands and results, the security lesson, an interview explanation, the next exact task, and outstanding decisions. Do not claim planned work as implemented evidence.

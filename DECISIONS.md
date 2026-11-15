@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D17 — Isolate the role defect without implementing premature payment execution
+
+Phase 4 uses a bounded disposable refund-request queue. The CLI selects the vulnerable composition at process start; the HTTP app always uses hardened tools. Both modes enforce tenant and schema constraints. Hardened request creation requires manager role; vulnerable creation omits that check. Neither executes a refund. This narrows the impact claim while producing a measurable unauthorized state transition and a shared regression assertion. The scripted direct-injection fixture models an already-compromised proposal, not real-model attack effectiveness. See F001 and Phase 4 evidence.
+
 ## D16 — Phase 3 agent boundary
 
 Introduce a `ModelAdapter` returning unknown data, strict discriminated proposal schemas, a constrained tool registry, a maximum of three tool calls, and a two-second asynchronous execution deadline. Actor context is supplied separately by the authenticated application. Customer/document reads filter tenant and document classification at lookup; refund calls enforce manager role and return confirmation-required without mutation. This is preferable to a nominally hardened refund that lacks confirmation. The new agent preview endpoint checks conversation ownership before invoking the adapter and does not change message-history semantics. Fixtures use explicit slash commands for reproducibility; they are not natural-language AI behavior. Allowlisted audit events exclude model/user text and tool payloads. See Phase 3 evidence for timeout and persistence limitations.

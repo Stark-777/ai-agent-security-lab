@@ -1,5 +1,7 @@
 # AI Agent Security Lab
 
+**Phase 4 local update (2026-11-15):** a CLI-only vulnerable/hardened refund-request authorization lab is implemented. Run `npm run lab:refund` for the hardened pass; `LAB_REFUND_MODE=vulnerable npm run lab:refund` deliberately exits 1 after detecting an unauthorized synthetic queue entry. See [F001](docs/findings/F001-broken-tool-authorization.md) and [Phase 4 evidence](docs/evidence/phase-4.md). Phase 3 is pushed as `06c392d`; Phase 4 is not yet committed. Historical milestone descriptions below retain their earlier scope.
+
 **Local Phase 3 update (2026-11-14):** a deterministic model adapter, three schema-constrained tools, tenant/role enforcement, bounded execution, and sanitized audit events are now implemented. See [Phase 3 behavior and verification](docs/evidence/phase-3.md) for commands and limits. The published badge and historical Phase 2 sections below describe the earlier milestone until this update is committed and pushed.
 
 [![Foundation checks](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml)
