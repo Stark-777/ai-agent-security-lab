@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { errorSchema, healthSchema, jsonSchema } from '../src/contracts.ts';
 import type { z } from 'zod';
 import { actorSchema } from '../src/identity.ts';
+import { agentRequestSchema, agentResponseSchema } from '../src/agent.ts';
 import {
   addMessageSchema,
   conversationSchema,
@@ -51,6 +52,29 @@ const document = {
   },
   servers: [{ url: 'http://127.0.0.1:3000' }],
   paths: {
+    '/v1/conversations/{id}/agent': {
+      post: {
+        operationId: 'runAgent',
+        summary:
+          'Run deterministic local adapter in an owned conversation; does not persist a turn',
+        security,
+        parameters: objectId,
+        requestBody: requestBody(agentRequestSchema),
+        responses: {
+          '200': response(
+            'Answer and sanitized tool trace',
+            agentResponseSchema,
+          ),
+          '404': response('Missing or inaccessible conversation', errorSchema),
+          '502': response(
+            'Invalid output, deadline, or execution limit',
+            errorSchema,
+          ),
+          ...protectedErrors,
+          ...writeErrors,
+        },
+      },
+    },
     '/v1/me': {
       get: {
         operationId: 'getIdentity',

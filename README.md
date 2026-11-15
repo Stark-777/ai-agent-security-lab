@@ -1,5 +1,7 @@
 # AI Agent Security Lab
 
+**Local Phase 3 update (2026-11-14):** a deterministic model adapter, three schema-constrained tools, tenant/role enforcement, bounded execution, and sanitized audit events are now implemented. See [Phase 3 behavior and verification](docs/evidence/phase-3.md) for commands and limits. The published badge and historical Phase 2 sections below describe the earlier milestone until this update is committed and pushed.
+
 [![Foundation checks](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Stark-777/ai-agent-security-lab/actions/workflows/ci.yml)
 
 **Application Security portfolio project: tenant isolation, object authorization, and deterministic security regression testing for a future AI-enabled support API.**

@@ -12,6 +12,7 @@ import {
 } from './conversations.ts';
 import { emptyQuerySchema, errorSchema, jsonSchema } from './contracts.ts';
 import { parseInput } from './validation.ts';
+import { Agent, agentRequestSchema, agentResponseSchema } from './agent.ts';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -29,6 +30,7 @@ export async function registerConversationRoutes(
   options: { authMode: AppConfig['authMode'] },
 ) {
   const repository = new ConversationRepository();
+  const agent = new Agent();
   app.decorateRequest('actor', null);
   app.addHook('onRequest', async (request) => {
     const names = request.raw.rawHeaders.filter((_, index) => index % 2 === 0);
@@ -49,6 +51,28 @@ export async function registerConversationRoutes(
       status,
       jsonSchema(errorSchema),
     ]),
+  );
+
+  app.post(
+    '/v1/conversations/:id/agent',
+    {
+      schema: {
+        response: {
+          200: jsonSchema(agentResponseSchema),
+          502: jsonSchema(errorSchema),
+          ...errors,
+        },
+      },
+    },
+    async (request) => {
+      const actor = actorFor(request);
+      const { id } = parseInput(conversationParamsSchema, request.params);
+      repository.read(actor, id);
+      const { content } = parseInput(agentRequestSchema, request.body);
+      return agent.run(actor, content, request.id, (event) =>
+        request.log.info(event),
+      );
+    },
   );
 
   app.get(

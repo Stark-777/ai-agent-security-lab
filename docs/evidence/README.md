@@ -1,5 +1,7 @@
 # Evidence register
 
+Latest local implementation: [Phase 3 deterministic agent](phase-3.md). Its changes are not covered by the earlier published CI run.
+
 | Record                                     | Scope                                                              |
 | ------------------------------------------ | ------------------------------------------------------------------ |
 | [Publication verification](publication.md) | Latest local checks and GitHub publication status                  |

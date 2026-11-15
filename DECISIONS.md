@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D16 — Phase 3 agent boundary
+
+Introduce a `ModelAdapter` returning unknown data, strict discriminated proposal schemas, a constrained tool registry, a maximum of three tool calls, and a two-second asynchronous execution deadline. Actor context is supplied separately by the authenticated application. Customer/document reads filter tenant and document classification at lookup; refund calls enforce manager role and return confirmation-required without mutation. This is preferable to a nominally hardened refund that lacks confirmation. The new agent preview endpoint checks conversation ownership before invoking the adapter and does not change message-history semantics. Fixtures use explicit slash commands for reproducibility; they are not natural-language AI behavior. Allowlisted audit events exclude model/user text and tool payloads. See Phase 3 evidence for timeout and persistence limitations.
+
 D01–D08 were proposed on 2026-10-29. Phase 1 was explicitly authorized on 2026-11-01; foundation decisions are now implemented as described in D09–D11. Later-phase designs remain proposals.
 
 Phase 2 was subsequently authorized on 2026-11-01; D13–D15 record its implemented choices.

@@ -6,6 +6,7 @@ export const errorSchema = z.strictObject({
   error: z.strictObject({
     code: z.enum([
       'INVALID_REQUEST',
+      'AGENT_FAILED',
       'UNAUTHENTICATED',
       'FORBIDDEN',
       'LIMIT_REACHED',

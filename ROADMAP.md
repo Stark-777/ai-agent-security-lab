@@ -1,5 +1,7 @@
 # Milestone plan
 
+Local update (2026-11-14): Phase 3 implemented; see [Phase 3](docs/evidence/phase-3.md). Phase 4 has not started. The historical status below describes the published Phase 2 milestone.
+
 Each phase ends with changed files, verified commands and results, the security lesson, an interview explanation, the next exact task, and outstanding decisions. Do not claim planned work as implemented evidence.
 
 Current status (2026-11-01): Phases 0–2 implemented, with verification recorded in [Phase 1 evidence](docs/evidence/phase-1.md) and [Phase 2 evidence](docs/evidence/phase-2.md). Docker and hosted GitHub Actions execution remain unverified. Phase 3 has not started.

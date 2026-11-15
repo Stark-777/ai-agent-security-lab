@@ -1,5 +1,7 @@
 # Initial threat model
 
+Phase 3 update: model output is runtime-validated before tool execution; actor scope remains application-owned. Synthetic customer/document reads enforce tenant and classification, and refund proposals enforce role with no mutation capability. Tests inject malformed and repeated model proposals directly. H1–H3 exploit reproductions remain unimplemented; deterministic proposal tests do not establish real-model susceptibility.
+
 Status: hypotheses, not discovered vulnerabilities. Reconcile this document with code at every phase.
 
 Phase 1 update (2026-11-01): schema rejection, payload size enforcement, generic error handling, server-generated request IDs, and log canary tests now cover the HTTP foundation. H1–H3 remain untested because no agent, tools, or tenant data exist. These foundation tests are deterministic security regressions, not model evaluations or proof of tenant isolation.

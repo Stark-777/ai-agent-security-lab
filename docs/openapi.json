@@ -11,6 +11,548 @@
     }
   ],
   "paths": {
+    "/v1/conversations/{id}/agent": {
+      "post": {
+        "operationId": "runAgent",
+        "summary": "Run deterministic local adapter in an owned conversation; does not persist a turn",
+        "security": [
+          {
+            "localBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "content"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer and sanitized tool trace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "answer": {
+                      "type": "string"
+                    },
+                    "trace": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "step": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "tool": {
+                            "type": "string",
+                            "enum": [
+                              "getCustomerRecord",
+                              "retrieveInternalDocument",
+                              "issueRefund"
+                            ]
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "enum": [
+                              "allowed",
+                              "denied",
+                              "not_found",
+                              "confirmation_required"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "step",
+                          "tool",
+                          "outcome"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "answer",
+                    "trace"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid shape, ID, or unexpected query fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid credentials or fixture mode disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid server actor context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or inaccessible conversation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Local storage capacity reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds 8192 bytes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Invalid output, deadline, or execution limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "getIdentity",
@@ -71,6 +613,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -119,6 +662,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -167,6 +711,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -215,6 +760,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -373,6 +919,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -421,6 +968,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -469,6 +1017,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -517,6 +1066,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -565,6 +1115,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -613,6 +1164,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -661,6 +1213,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -809,6 +1362,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -857,6 +1411,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -905,6 +1460,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -953,6 +1509,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1001,6 +1558,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1130,6 +1688,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1178,6 +1737,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1226,6 +1786,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1274,6 +1835,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1322,6 +1884,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1370,6 +1933,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1418,6 +1982,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1466,6 +2031,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1543,6 +2109,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1591,6 +2158,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
                             "LIMIT_REACHED",
@@ -1648,6 +2216,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_REQUEST",
+                  "AGENT_FAILED",
                   "UNAUTHENTICATED",
                   "FORBIDDEN",
                   "LIMIT_REACHED",
