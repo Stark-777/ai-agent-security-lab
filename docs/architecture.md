@@ -1,5 +1,7 @@
 # Proposed architecture and data flow
 
+Phase 7: authenticated manager → exact refund proposal → user review → separate confirmation endpoint → synchronous bounded simulated ledger update. RefundService is not a model tool; agent context never receives its tokens. SHA-256 token digests, process-local replay/rate state, and minimized audit events protect this local workflow. See [limits](evidence/phase-7.md).
+
 Phase 6 local comparison: CLI/test constructor composition can omit conversation tenant/owner checks or retrieval tenant checks. HTTP construction always selects hardened defaults. Authentication and retrieval classification remain active in both modes. [F002](findings/F002-broken-object-authorization.md) documents read/write and model-context consequences.
 
 Phase 5 local flow: trusted fixture manifest → tenant/classification filter → bounded lexical retrieval → source-labeled untrusted model context → validated proposal → independent tool policy. `DocumentRepository` provides context; the default HTTP agent uses clean fixtures. Only CLI/test composition selects poisoning. No new endpoint or external ingestion source is introduced. See [Phase 5](evidence/phase-5.md).

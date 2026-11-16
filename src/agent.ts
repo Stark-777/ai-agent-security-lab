@@ -3,6 +3,7 @@ import type { Actor } from './identity.ts';
 import { requireConversationActor } from './identity.ts';
 import { ApplicationError } from './errors.ts';
 import { RefundRequestLab } from './refund-lab.ts';
+import { filterAnswer } from './disclosure.ts';
 import { DocumentRepository, POISON, RETRIEVAL_POLICY } from './retrieval.ts';
 import type { RetrievedDocument } from './retrieval.ts';
 
@@ -264,7 +265,7 @@ export class Agent {
         const parsed = outputSchema.safeParse(raw);
         if (!parsed.success) throw new ApplicationError('AGENT_FAILED');
         if (parsed.data.kind === 'answer')
-          return { answer: parsed.data.text, trace };
+          return { answer: filterAnswer(parsed.data.text), trace };
         if (step === MAX_TOOL_CALLS) throw new ApplicationError('AGENT_FAILED');
         const proposal = parsed.data.proposal;
         const result = this.tools.execute(trusted, proposal);

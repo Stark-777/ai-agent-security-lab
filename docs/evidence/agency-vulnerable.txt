@@ -1,0 +1,26 @@
+
+> ai-agent-security-lab@0.1.0 lab:agency
+> node --experimental-strip-types scripts/agency-lab.ts
+
+{"mode":"vulnerable","before":20000,"after":19900,"explicitHumanConfirmation":false}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: SECURITY INVARIANT FAILED: controller self-confirmed without user action
+
+19900 !== 20000
+
+    at file://<project>/scripts/agency-lab.ts:26:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 19900,
+  expected: 20000,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.2

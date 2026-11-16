@@ -17,6 +17,8 @@ export function createLogger(
         'cookie',
         'password',
         'token',
+        'confirmationToken',
+        '*.confirmationToken',
         'secret',
         '*.authorization',
         '*.cookie',

@@ -1,5 +1,7 @@
 # Initial threat model
 
+Phase 7: controller self-confirmation is reproduced in an isolated CLI. Hardened agent lacks confirmation capabilities; user confirmation runs through a separate authenticated service. Tests cover token substitution, replay, expiry, balance/rate limits and known synthetic disclosure canaries. A compromised manager client remains capable of confirming; no human-cognition proof, two-person approval, durable replay, or comprehensive PII detection is claimed.
+
 Phase 6: H2 now has an isolated reproduced conversation read/write bypass and cross-tenant retrieval bypass. Hardened repository predicates contain both. Tests inspect model context without claiming final-answer exfiltration. Known object IDs are supplied by fixture setup; guessing or discovering foreign UUIDs is not demonstrated.
 
 Phase 5: H3 now has a controlled poisoned-document replay with a legitimate user question. The simulated model proposes a forbidden action; hardened role policy contains the state transition. This shares F001's root cause. Poisoning access is assumed through a fixture, not demonstrated via an ingestion exploit. Tenant/classification exclusion is tested on actual adapter context. Real-model behavior and manager-context excessive agency remain outside this evidence.

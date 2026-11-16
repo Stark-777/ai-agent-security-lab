@@ -11,6 +11,946 @@
     }
   ],
   "paths": {
+    "/v1/refund-proposals": {
+      "post": {
+        "operationId": "proposeRefund",
+        "summary": "Manager proposes a simulated USD refund; token is returned only here",
+        "security": [
+          {
+            "localBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invoiceId": {
+                    "type": "string",
+                    "enum": [
+                      "north-invoice",
+                      "harbor-invoice"
+                    ]
+                  },
+                  "amountCents": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000
+                  },
+                  "currency": {
+                    "type": "string",
+                    "const": "USD"
+                  }
+                },
+                "required": [
+                  "invoiceId",
+                  "amountCents",
+                  "currency"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bound proposal and one-use confirmation token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "invoiceId": {
+                      "type": "string",
+                      "enum": [
+                        "north-invoice",
+                        "harbor-invoice"
+                      ]
+                    },
+                    "amountCents": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 10000
+                    },
+                    "currency": {
+                      "type": "string",
+                      "const": "USD"
+                    },
+                    "expiresAt": {
+                      "type": "number"
+                    },
+                    "confirmationToken": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "invoiceId",
+                    "amountCents",
+                    "currency",
+                    "expiresAt",
+                    "confirmationToken"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid shape, ID, or unexpected query fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid credentials or fixture mode disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid server actor context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Local storage capacity reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds 8192 bytes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/refund-proposals/{id}/confirm": {
+      "post": {
+        "operationId": "confirmRefund",
+        "summary": "Manager confirms exact proposal; simulated ledger only",
+        "security": [
+          {
+            "localBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirmationToken": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "invoiceId": {
+                    "type": "string",
+                    "enum": [
+                      "north-invoice",
+                      "harbor-invoice"
+                    ]
+                  },
+                  "amountCents": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000
+                  },
+                  "currency": {
+                    "type": "string",
+                    "const": "USD"
+                  }
+                },
+                "required": [
+                  "confirmationToken",
+                  "invoiceId",
+                  "amountCents",
+                  "currency"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Simulated execution receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proposalId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "executed"
+                    },
+                    "remainingCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "proposalId",
+                    "status",
+                    "remainingCents"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid shape, ID, or unexpected query fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/invalid credentials or fixture mode disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid server actor context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing or inaccessible proposal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Local storage capacity reached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds 8192 bytes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INVALID_REQUEST",
+                            "ACTION_REJECTED",
+                            "AGENT_FAILED",
+                            "UNAUTHENTICATED",
+                            "FORBIDDEN",
+                            "LIMIT_REACHED",
+                            "NOT_FOUND",
+                            "PAYLOAD_TOO_LARGE",
+                            "UNSUPPORTED_MEDIA_TYPE",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "requestId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/conversations/{id}/agent": {
       "post": {
         "operationId": "runAgent",
@@ -123,6 +1063,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -172,6 +1113,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -221,6 +1163,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -270,6 +1213,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -319,6 +1263,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -368,6 +1313,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -417,6 +1363,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -466,6 +1413,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -515,6 +1463,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -613,6 +1562,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -662,6 +1612,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -711,6 +1662,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -760,6 +1712,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -919,6 +1872,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -968,6 +1922,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1017,6 +1972,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1066,6 +2022,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1115,6 +2072,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1164,6 +2122,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1213,6 +2172,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1362,6 +2322,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1411,6 +2372,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1460,6 +2422,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1509,6 +2472,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1558,6 +2522,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1688,6 +2653,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1737,6 +2703,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1786,6 +2753,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1835,6 +2803,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1884,6 +2853,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1933,6 +2903,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -1982,6 +2953,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -2031,6 +3003,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -2109,6 +3082,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -2158,6 +3132,7 @@
                           "type": "string",
                           "enum": [
                             "INVALID_REQUEST",
+                            "ACTION_REJECTED",
                             "AGENT_FAILED",
                             "UNAUTHENTICATED",
                             "FORBIDDEN",
@@ -2216,6 +3191,7 @@
                 "type": "string",
                 "enum": [
                   "INVALID_REQUEST",
+                  "ACTION_REJECTED",
                   "AGENT_FAILED",
                   "UNAUTHENTICATED",
                   "FORBIDDEN",

@@ -1,0 +1,6 @@
+
+> ai-agent-security-lab@0.1.0 lab:agency
+> node --experimental-strip-types scripts/agency-lab.ts
+
+{"mode":"hardened","before":20000,"after":20000,"explicitHumanConfirmation":false}
+PASS: proposal alone cannot change the simulated balance.

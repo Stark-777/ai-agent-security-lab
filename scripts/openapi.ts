@@ -2,6 +2,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { errorSchema, healthSchema, jsonSchema } from '../src/contracts.ts';
 import type { z } from 'zod';
 import { actorSchema } from '../src/identity.ts';
+import {
+  refundInputSchema,
+  confirmSchema,
+  proposalSchema,
+  receiptSchema,
+} from '../src/refunds.ts';
 import { agentRequestSchema, agentResponseSchema } from '../src/agent.ts';
 import {
   addMessageSchema,
@@ -52,6 +58,38 @@ const document = {
   },
   servers: [{ url: 'http://127.0.0.1:3000' }],
   paths: {
+    '/v1/refund-proposals': {
+      post: {
+        operationId: 'proposeRefund',
+        summary:
+          'Manager proposes a simulated USD refund; token is returned only here',
+        security,
+        requestBody: requestBody(refundInputSchema),
+        responses: {
+          '201': response(
+            'Bound proposal and one-use confirmation token',
+            proposalSchema,
+          ),
+          ...protectedErrors,
+          ...writeErrors,
+        },
+      },
+    },
+    '/v1/refund-proposals/{id}/confirm': {
+      post: {
+        operationId: 'confirmRefund',
+        summary: 'Manager confirms exact proposal; simulated ledger only',
+        security,
+        parameters: objectId,
+        requestBody: requestBody(confirmSchema),
+        responses: {
+          '200': response('Simulated execution receipt', receiptSchema),
+          '404': response('Missing or inaccessible proposal', errorSchema),
+          ...protectedErrors,
+          ...writeErrors,
+        },
+      },
+    },
     '/v1/conversations/{id}/agent': {
       post: {
         operationId: 'runAgent',

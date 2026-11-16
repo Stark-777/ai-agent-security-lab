@@ -1,5 +1,7 @@
 # Authorization matrix
 
+Phase 7: only billing managers may create/confirm simulated USD refund proposals; confirmation additionally requires same actor/tenant, exact transaction, valid unused unexpired token, remaining balance, and transaction/rate limits. Support agents receive 403. Inaccessible proposals are 404; invalid/replayed/expired transactions are 409. The existing agent tool remains a pending-request facility with no execution capability.
+
 Phase 6 comparison tests all five identities against all five owners under hardened and vulnerable CLI compositions. Hardened policy remains tenant AND owner for conversation reads/appends, tenant AND classification for retrieval. Neither role gains cross-tenant scope. Vulnerable constructors are never selected by HTTP request inputs.
 
 Phase 5: context retrieval enforces actor tenant and `tenant-internal` classification before ranking. There is no client-selectable tenant/classification filter. Retrieved text cannot grant a tool permission. Both roles receive only their tenant's allowed retrieval sources; restricted sources remain excluded.

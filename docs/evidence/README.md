@@ -1,5 +1,7 @@
 # Evidence register
 
+Latest local evidence: [Phase 7 confirmation](phase-7.md); published Phase 6 commit is `d928e1d`.
+
 Latest local evidence: [Phase 6 object authorization](phase-6.md). Phase 5 is published as `de33114`; Phase 6 remains uncommitted.
 
 Latest local evidence: [Phase 5 retrieval](phase-5.md). Phase 4 is published as `9e68c23`; Phase 5 is uncommitted.

@@ -13,6 +13,7 @@ import {
 import { emptyQuerySchema, errorSchema, jsonSchema } from './contracts.ts';
 import { parseInput } from './validation.ts';
 import { Agent, agentRequestSchema, agentResponseSchema } from './agent.ts';
+import { RefundService, proposalSchema, receiptSchema } from './refunds.ts';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -31,6 +32,7 @@ export async function registerConversationRoutes(
 ) {
   const repository = new ConversationRepository();
   const agent = new Agent();
+  const refunds = new RefundService();
   app.decorateRequest('actor', null);
   app.addHook('onRequest', async (request) => {
     const names = request.raw.rawHeaders.filter((_, index) => index % 2 === 0);
@@ -51,6 +53,48 @@ export async function registerConversationRoutes(
       status,
       jsonSchema(errorSchema),
     ]),
+  );
+
+  app.post(
+    '/v1/refund-proposals',
+    { schema: { response: { 201: jsonSchema(proposalSchema), ...errors } } },
+    async (request, reply) => {
+      const actor = actorFor(request);
+      try {
+        const proposal = refunds.propose(actor, request.body);
+        request.log.info({
+          event: 'refund_proposed',
+          userId: actor.userId,
+          tenantId: actor.tenantId,
+          outcome: 'confirmation_required',
+        });
+        return reply.code(201).send(proposal);
+      } catch (error) {
+        request.log.info({ event: 'refund_proposed', outcome: 'rejected' });
+        throw error;
+      }
+    },
+  );
+  app.post(
+    '/v1/refund-proposals/:id/confirm',
+    { schema: { response: { 200: jsonSchema(receiptSchema), ...errors } } },
+    async (request) => {
+      const actor = actorFor(request);
+      const { id } = parseInput(conversationParamsSchema, request.params);
+      try {
+        const receipt = refunds.confirm(actor, id, request.body);
+        request.log.info({
+          event: 'refund_confirmed',
+          userId: actor.userId,
+          tenantId: actor.tenantId,
+          outcome: 'executed',
+        });
+        return receipt;
+      } catch (error) {
+        request.log.info({ event: 'refund_confirmed', outcome: 'rejected' });
+        throw error;
+      }
+    },
   );
 
   app.post(

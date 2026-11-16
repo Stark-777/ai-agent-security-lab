@@ -1,4 +1,5 @@
 const failures = {
+  ACTION_REJECTED: { status: 409, message: 'Action cannot be completed' },
   AGENT_FAILED: { status: 502, message: 'Agent execution failed' },
   UNAUTHENTICATED: { status: 401, message: 'Authentication required' },
   FORBIDDEN: { status: 403, message: 'Action not permitted' },

@@ -1,5 +1,7 @@
 # Finding records
 
+Latest local comparison: [F003 — excessive agency](F003-excessive-agency.md). Known-canary disclosure tests extend controls but are not a separately reproduced vulnerability finding.
+
 Implemented local comparison: [F002 — object authorization](F002-broken-object-authorization.md), covering conversation read/write scope and retrieval tenant filtering.
 
 Additional F001 attack path: [indirect injection through retrieved content](F001-indirect-injection.md). Same authorization root cause; no second finding count.

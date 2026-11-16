@@ -1,5 +1,7 @@
 # Milestone plan
 
+2026-11-15: Phase 6 published as `d928e1d`; Phase 7 confirmation and synthetic sensitive-data controls implemented locally. See [evidence](docs/evidence/phase-7.md). Phase 8 has not started.
+
 2026-11-15: Phase 5 published as `de33114`; Phase 6 local object-authorization comparisons implemented with 95 passing tests. See [evidence](docs/evidence/phase-6.md). Phase 7 has not started.
 
 2026-11-15 update: Phase 4 published as `9e68c23`; Phase 5 local retrieval and indirect-injection comparison implemented. [Evidence and limits](docs/evidence/phase-5.md). Phase 6 has not started.

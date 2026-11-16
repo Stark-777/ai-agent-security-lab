@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D20 — Keep confirmation authority outside the agent
+
+Add a separate manager-only RefundService and HTTP proposal/confirmation flow. Bind hashed one-use 60-second tokens to exact transaction and actor; recheck role/tenant/balance/limits at synchronous execution. USD integer cents, maximum 10000 cents/refund, three executions/actor/minute. Model ToolRegistry has no service reference and never receives confirmation tokens. Existing model pending-queue proposals are not automatically converted. Self-confirming CLI controller demonstrates excessive agency even with valid tokens. No production payments or durable/distributed claims. Known-canary output withholding is supplementary; existing context minimization and log exclusion remain primary disclosure controls.
+
 ## D19 — Reproduce object scope defects in existing repositories
 
 Add explicit hardened-default constructor composition for CLI/tests. Conversation vulnerable mode skips tenant/owner predicates; retrieval vulnerable mode skips only tenant filtering, preserving classification limits. Default HTTP construction remains hardened and has no mode switch. Exercise conversation reads and writes, same-tenant non-owners, cross-tenant roles, independent tenant predicates, and actual model context. Keep customer-record tools hardened instead of adding redundant unsafe paths. See F002 for impact limits; model-context disclosure is distinct from final-answer exfiltration.
