@@ -1,5 +1,7 @@
 # Evidence register
 
+Latest local evidence: [Phase 5 retrieval](phase-5.md). Phase 4 is published as `9e68c23`; Phase 5 is uncommitted.
+
 Latest local work: [Phase 4 comparison](phase-4.md) and [F001](../findings/F001-broken-tool-authorization.md). Phase 3 is published as `06c392d`; Phase 4 is not yet pushed.
 
 Latest local implementation: [Phase 3 deterministic agent](phase-3.md). Its changes are not covered by the earlier published CI run.

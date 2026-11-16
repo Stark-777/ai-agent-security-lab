@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D18 — Retrieval data carries no execution authority
+
+Use a validated code-owned fixture manifest, filter tenant/classification before lexical ranking, bound context, and pass source-labeled copies separately from policy. Inject poisoning only through CLI/test composition; default API fixtures remain clean. Simulate a model ignoring labels so the containment test depends on application authorization. Reuse F001's tool defect instead of claiming a new root cause for a different instruction source. No upload pipeline, embedding service, or model evaluation is implied. See Phase 5 evidence for limitations and the separate direct-tool fixture collection.
+
 ## D17 — Isolate the role defect without implementing premature payment execution
 
 Phase 4 uses a bounded disposable refund-request queue. The CLI selects the vulnerable composition at process start; the HTTP app always uses hardened tools. Both modes enforce tenant and schema constraints. Hardened request creation requires manager role; vulnerable creation omits that check. Neither executes a refund. This narrows the impact claim while producing a measurable unauthorized state transition and a shared regression assertion. The scripted direct-injection fixture models an already-compromised proposal, not real-model attack effectiveness. See F001 and Phase 4 evidence.

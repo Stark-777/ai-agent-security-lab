@@ -1,5 +1,7 @@
 # Authorization matrix
 
+Phase 5: context retrieval enforces actor tenant and `tenant-internal` classification before ranking. There is no client-selectable tenant/classification filter. Retrieved text cannot grant a tool permission. Both roles receive only their tenant's allowed retrieval sources; restricted sources remain excluded.
+
 Phase 4 refinement: hardened billing-manager refund proposals create a pending synthetic queue entry and return `confirmation_required`; support agents remain denied. No payment executes. The intentionally vulnerable CLI allows support-agent queue creation for comparison; the HTTP composition has no vulnerable startup/request option.
 
 Phase 3 update: owner-only agent preview is implemented. Both roles may read same-tenant synthetic customer records and tenant-internal documents. Restricted and cross-tenant objects yield `not_found` tool outcomes. Support-agent refunds yield `denied`; managers receive `confirmation_required` only for their tenant's invoice. No role can execute a refund yet. These tool outcomes appear inside a successful agent response; they are not HTTP authorization status codes. History/ownership checks retain their prior HTTP semantics.

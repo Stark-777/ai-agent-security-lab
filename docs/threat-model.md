@@ -1,5 +1,7 @@
 # Initial threat model
 
+Phase 5: H3 now has a controlled poisoned-document replay with a legitimate user question. The simulated model proposes a forbidden action; hardened role policy contains the state transition. This shares F001's root cause. Poisoning access is assumed through a fixture, not demonstrated via an ingestion exploit. Tenant/classification exclusion is tested on actual adapter context. Real-model behavior and manager-context excessive agency remain outside this evidence.
+
 Phase 4: H1 now has a deliberately vulnerable CLI reproduction with unauthorized refund-request state creation. The simulated direct-injection text reaches a scripted forbidden-tool proposal. Hardened policy blocks that state change; no real-model jailbreak or payment impact is claimed. Tenant/schema controls remain active in both modes.
 
 Phase 3 update: model output is runtime-validated before tool execution; actor scope remains application-owned. Synthetic customer/document reads enforce tenant and classification, and refund proposals enforce role with no mutation capability. Tests inject malformed and repeated model proposals directly. H1–H3 exploit reproductions remain unimplemented; deterministic proposal tests do not establish real-model susceptibility.

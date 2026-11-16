@@ -1,5 +1,7 @@
 # Finding records
 
+Additional F001 attack path: [indirect injection through retrieved content](F001-indirect-injection.md). Same authorization root cause; no second finding count.
+
 Implemented local finding: [F001 — refund-request role authorization](F001-broken-tool-authorization.md). The original planning notes below predate that reproduction.
 
 No vulnerabilities have been implemented or reproduced yet. H1–H3 are design hypotheses, not findings.
