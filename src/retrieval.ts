@@ -22,8 +22,10 @@ export const RETRIEVAL_POLICY =
 
 // Trusted manifest assigns metadata; embedded text has no metadata authority.
 export class DocumentRepository {
+  #mode: 'hardened' | 'vulnerable';
   #documents: z.infer<typeof documentSchema>[];
-  constructor(poisoned = false) {
+  constructor(poisoned = false, mode: 'hardened' | 'vulnerable' = 'hardened') {
+    this.#mode = mode;
     this.#documents = z
       .array(documentSchema)
       .max(20)
@@ -59,7 +61,8 @@ export class DocumentRepository {
     const words = query.toLowerCase().match(/[a-z]{3,}/g) ?? [];
     const allowed = this.#documents.filter(
       (document) =>
-        document.tenantId === trusted.tenantId &&
+        (this.#mode === 'vulnerable' ||
+          document.tenantId === trusted.tenantId) &&
         document.classification === 'tenant-internal',
     );
     const ranked = allowed

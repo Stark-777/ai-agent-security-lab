@@ -1,5 +1,7 @@
 # Authorization matrix
 
+Phase 6 comparison tests all five identities against all five owners under hardened and vulnerable CLI compositions. Hardened policy remains tenant AND owner for conversation reads/appends, tenant AND classification for retrieval. Neither role gains cross-tenant scope. Vulnerable constructors are never selected by HTTP request inputs.
+
 Phase 5: context retrieval enforces actor tenant and `tenant-internal` classification before ranking. There is no client-selectable tenant/classification filter. Retrieved text cannot grant a tool permission. Both roles receive only their tenant's allowed retrieval sources; restricted sources remain excluded.
 
 Phase 4 refinement: hardened billing-manager refund proposals create a pending synthetic queue entry and return `confirmation_required`; support agents remain denied. No payment executes. The intentionally vulnerable CLI allows support-agent queue creation for comparison; the HTTP composition has no vulnerable startup/request option.

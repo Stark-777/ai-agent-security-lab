@@ -13,6 +13,7 @@
     "smoke": "node --experimental-strip-types scripts/smoke.ts",
     "lab:refund": "node --experimental-strip-types scripts/refund-lab.ts",
     "lab:rag": "node --experimental-strip-types scripts/rag-lab.ts",
+    "lab:bola": "node --experimental-strip-types scripts/bola-lab.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",

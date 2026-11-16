@@ -1,5 +1,7 @@
 # AI Agent Security Lab
 
+**Phase 6 local update (2026-11-15):** conversation BOLA and cross-tenant retrieval comparisons are implemented. `npm run lab:bola` passes hardened invariants; `LAB_OBJECT_MODE=vulnerable npm run lab:bola` intentionally exits 1 after exposing/tampering with synthetic foreign state. All 95 tests pass. See [F002](docs/findings/F002-broken-object-authorization.md) and [Phase 6 evidence](docs/evidence/phase-6.md). Phase 5 is published as `de33114`; Phase 6 remains uncommitted. Earlier milestone descriptions below are historical.
+
 **Phase 5 local update (2026-11-15):** tenant/classification-filtered lexical retrieval and a poisoned-document replay are implemented. Run `npm run lab:rag` for hardened containment; `LAB_REFUND_MODE=vulnerable npm run lab:rag` intentionally exits 1 after detecting unauthorized queue creation. See [Phase 5](docs/evidence/phase-5.md). All 90 tests pass locally. Phase 4 is published as `9e68c23`; Phase 5 is uncommitted. Earlier milestone descriptions below are historical.
 
 **Phase 4 local update (2026-11-15):** a CLI-only vulnerable/hardened refund-request authorization lab is implemented. Run `npm run lab:refund` for the hardened pass; `LAB_REFUND_MODE=vulnerable npm run lab:refund` deliberately exits 1 after detecting an unauthorized synthetic queue entry. See [F001](docs/findings/F001-broken-tool-authorization.md) and [Phase 4 evidence](docs/evidence/phase-4.md). Phase 3 is pushed as `06c392d`; Phase 4 is not yet committed. Historical milestone descriptions below retain their earlier scope.

@@ -1,0 +1,35 @@
+
+> ai-agent-security-lab@0.1.0 lab:bola
+> node --experimental-strip-types scripts/bola-lab.ts
+
+{
+  "mode": "hardened",
+  "attacker": "north-agent-a",
+  "targetId": "297aecde-2ecc-4eac-9688-27e2dabb4cc0",
+  "readDenied": true,
+  "writeDenied": true,
+  "sources": [
+    {
+      "sourceId": "north-guide",
+      "trust": "untrusted-data",
+      "title": "Subscription support",
+      "content": "Northstar subscription support is available weekdays."
+    }
+  ],
+  "after": {
+    "id": "297aecde-2ecc-4eac-9688-27e2dabb4cc0",
+    "tenantId": "harbor",
+    "ownerId": "harbor-agent",
+    "title": "Synthetic Harbor case",
+    "createdAt": "2026-11-16T02:53:46.653Z",
+    "messages": [
+      {
+        "id": "a7868801-a0c8-4f7c-bd67-5a0cdbe93bb1",
+        "role": "user",
+        "content": "synthetic-private-harbor-message",
+        "createdAt": "2026-11-16T02:53:46.655Z"
+      }
+    ]
+  }
+}
+PASS: foreign objects remain inaccessible and unchanged.

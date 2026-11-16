@@ -1,5 +1,7 @@
 # Milestone plan
 
+2026-11-15: Phase 5 published as `de33114`; Phase 6 local object-authorization comparisons implemented with 95 passing tests. See [evidence](docs/evidence/phase-6.md). Phase 7 has not started.
+
 2026-11-15 update: Phase 4 published as `9e68c23`; Phase 5 local retrieval and indirect-injection comparison implemented. [Evidence and limits](docs/evidence/phase-5.md). Phase 6 has not started.
 
 2026-11-15: Phase 3 published as `06c392d`; Phase 4 local CLI lab completed with 85 passing tests. Its impact is unauthorized refund-request creation, not payment execution; see [scope and evidence](docs/evidence/phase-4.md). Phase 5 has not started.

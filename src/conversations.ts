@@ -32,6 +32,10 @@ export const MAX_MESSAGES_PER_CONVERSATION = 100;
 
 export class ConversationRepository {
   #records = new Map<string, Conversation>();
+  #mode: 'hardened' | 'vulnerable';
+  constructor(mode: 'hardened' | 'vulnerable' = 'hardened') {
+    this.#mode = mode;
+  }
 
   create(actor: Actor, input: unknown): Conversation {
     const trusted = requireConversationActor(actor);
@@ -60,8 +64,10 @@ export class ConversationRepository {
     const record = this.#records.get(id);
     if (
       !record ||
-      record.tenantId !== trusted.tenantId ||
-      record.ownerId !== trusted.userId
+      // INTENTIONALLY VULNERABLE CLI composition: authentication without object scope.
+      (this.#mode === 'hardened' &&
+        (record.tenantId !== trusted.tenantId ||
+          record.ownerId !== trusted.userId))
     )
       throw new ApplicationError('NOT_FOUND');
     return record;

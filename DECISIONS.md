@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D19 — Reproduce object scope defects in existing repositories
+
+Add explicit hardened-default constructor composition for CLI/tests. Conversation vulnerable mode skips tenant/owner predicates; retrieval vulnerable mode skips only tenant filtering, preserving classification limits. Default HTTP construction remains hardened and has no mode switch. Exercise conversation reads and writes, same-tenant non-owners, cross-tenant roles, independent tenant predicates, and actual model context. Keep customer-record tools hardened instead of adding redundant unsafe paths. See F002 for impact limits; model-context disclosure is distinct from final-answer exfiltration.
+
 ## D18 — Retrieval data carries no execution authority
 
 Use a validated code-owned fixture manifest, filter tenant/classification before lexical ranking, bound context, and pass source-labeled copies separately from policy. Inject poisoning only through CLI/test composition; default API fixtures remain clean. Simulate a model ignoring labels so the containment test depends on application authorization. Reuse F001's tool defect instead of claiming a new root cause for a different instruction source. No upload pipeline, embedding service, or model evaluation is implied. See Phase 5 evidence for limitations and the separate direct-tool fixture collection.

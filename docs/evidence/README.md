@@ -1,5 +1,7 @@
 # Evidence register
 
+Latest local evidence: [Phase 6 object authorization](phase-6.md). Phase 5 is published as `de33114`; Phase 6 remains uncommitted.
+
 Latest local evidence: [Phase 5 retrieval](phase-5.md). Phase 4 is published as `9e68c23`; Phase 5 is uncommitted.
 
 Latest local work: [Phase 4 comparison](phase-4.md) and [F001](../findings/F001-broken-tool-authorization.md). Phase 3 is published as `06c392d`; Phase 4 is not yet pushed.

@@ -1,5 +1,7 @@
 # Finding records
 
+Implemented local comparison: [F002 — object authorization](F002-broken-object-authorization.md), covering conversation read/write scope and retrieval tenant filtering.
+
 Additional F001 attack path: [indirect injection through retrieved content](F001-indirect-injection.md). Same authorization root cause; no second finding count.
 
 Implemented local finding: [F001 — refund-request role authorization](F001-broken-tool-authorization.md). The original planning notes below predate that reproduction.

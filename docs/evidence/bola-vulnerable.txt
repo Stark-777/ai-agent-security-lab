@@ -1,0 +1,79 @@
+
+> ai-agent-security-lab@0.1.0 lab:bola
+> node --experimental-strip-types scripts/bola-lab.ts
+
+{
+  "mode": "vulnerable",
+  "attacker": "north-agent-a",
+  "targetId": "db9e25e5-40b2-4162-b5eb-69f63266cb30",
+  "readDenied": false,
+  "writeDenied": false,
+  "exposed": {
+    "id": "db9e25e5-40b2-4162-b5eb-69f63266cb30",
+    "tenantId": "harbor",
+    "ownerId": "harbor-agent",
+    "title": "Synthetic Harbor case",
+    "createdAt": "2026-11-16T02:53:47.109Z",
+    "messages": [
+      {
+        "id": "4c050a02-41f4-4678-a76d-ce0469803bc5",
+        "role": "user",
+        "content": "synthetic-private-harbor-message",
+        "createdAt": "2026-11-16T02:53:47.111Z"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "sourceId": "harbor-guide",
+      "trust": "untrusted-data",
+      "title": "Subscription support",
+      "content": "Harbor subscription support is available daily. synthetic-harbor-canary"
+    },
+    {
+      "sourceId": "north-guide",
+      "trust": "untrusted-data",
+      "title": "Subscription support",
+      "content": "Northstar subscription support is available weekdays."
+    }
+  ],
+  "after": {
+    "id": "db9e25e5-40b2-4162-b5eb-69f63266cb30",
+    "tenantId": "harbor",
+    "ownerId": "harbor-agent",
+    "title": "Synthetic Harbor case",
+    "createdAt": "2026-11-16T02:53:47.109Z",
+    "messages": [
+      {
+        "id": "4c050a02-41f4-4678-a76d-ce0469803bc5",
+        "role": "user",
+        "content": "synthetic-private-harbor-message",
+        "createdAt": "2026-11-16T02:53:47.111Z"
+      },
+      {
+        "id": "66850447-adf2-4412-88af-85f7fdd72992",
+        "role": "user",
+        "content": "unauthorized-modification",
+        "createdAt": "2026-11-16T02:53:47.112Z"
+      }
+    ]
+  }
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: SECURITY INVARIANT FAILED: foreign conversation or document crossed tenant/owner boundary
+    at file://<project>/scripts/bola-lab.ts:53:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.22.2
