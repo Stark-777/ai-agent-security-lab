@@ -1,5 +1,7 @@
 # Initial threat model
 
+Phase 8: dependency and CI supply-chain risks now have advisory/scanner/inventory workflow controls. Action hashes and release checksums reduce mutable-reference risk, but Python transitive dependencies and container base tags retain supply-chain limitations. Scanners do not prove object authorization or prompt-injection containment; behavioral tests remain necessary. Hosted execution is pending publication.
+
 Phase 7: controller self-confirmation is reproduced in an isolated CLI. Hardened agent lacks confirmation capabilities; user confirmation runs through a separate authenticated service. Tests cover token substitution, replay, expiry, balance/rate limits and known synthetic disclosure canaries. A compromised manager client remains capable of confirming; no human-cognition proof, two-person approval, durable replay, or comprehensive PII detection is claimed.
 
 Phase 6: H2 now has an isolated reproduced conversation read/write bypass and cross-tenant retrieval bypass. Hardened repository predicates contain both. Tests inspect model context without claiming final-answer exfiltration. Known object IDs are supplied by fixture setup; guessing or discovering foreign UUIDs is not demonstrated.

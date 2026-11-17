@@ -1,0 +1,16 @@
+rules:
+  - id: no-dynamic-eval
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: Do not evaluate untrusted text as code.
+    pattern: eval(...)
+  - id: no-raw-request-logging
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: Raw request content must not enter application logs.
+    patterns:
+      - pattern-either:
+          - pattern: $LOG.info($REQ.body)
+          - pattern: $LOG.error($REQ.body)
+          - pattern: $LOG.info($REQ.headers)
+          - pattern: $LOG.info($REQ.query)

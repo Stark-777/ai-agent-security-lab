@@ -1,0 +1,82 @@
+name: Security controls
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci --ignore-scripts
+      - run: mkdir -p reports
+      - name: Runtime dependencies gate
+        run: npm audit --omit=dev --audit-level=high --json > reports/npm-runtime.json
+      - name: Full dependency report (moderate exception documented)
+        run: npm audit --audit-level=high --json > reports/npm-all.json
+      - name: Generate runtime SBOM
+        run: npm sbom --sbom-format cyclonedx --omit=dev > reports/npm.cdx.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install pinned Semgrep
+        run: python3 -m pip install 'semgrep==1.136.0'
+      - name: Validate rule signal
+        run: semgrep --test --config security/semgrep.yml security/semgrep.test.js
+      - name: Source gate
+        run: semgrep scan --config security/semgrep.yml --metrics=off --error --strict --json --output reports/semgrep.json src scripts
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: source-security-reports
+          path: reports/
+          retention-days: 14
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Install checksum-verified Trivy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/trivy" reports
+          gh release download v0.76.2 --repo aquasecurity/trivy --pattern trivy_0.76.2_Linux-64bit.tar.gz --pattern trivy_0.76.2_checksums.txt --dir "$RUNNER_TEMP/trivy"
+          cd "$RUNNER_TEMP/trivy"
+          grep '  trivy_0.76.2_Linux-64bit.tar.gz$' trivy_0.76.2_checksums.txt | sha256sum --check
+          tar -xzf trivy_0.76.2_Linux-64bit.tar.gz trivy
+          echo "$RUNNER_TEMP/trivy" >> "$GITHUB_PATH"
+      - name: Filesystem secret gate
+        run: trivy fs --scanners secret --skip-dirs node_modules,dist,.git --exit-code 1 --format json --output reports/secrets.json .
+      - name: Build exact image for scanning
+        run: docker build --tag lab-security:${{ github.sha }} .
+      - name: Image report and high/critical gate
+        run: trivy image --scanners vuln,secret --severity HIGH,CRITICAL --exit-code 1 --format json --output reports/image.json lab-security:${{ github.sha }}
+      - name: Image SBOM
+        if: always()
+        run: trivy image --format cyclonedx --output reports/image.cdx.json lab-security:${{ github.sha }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: container-security-reports
+          path: reports/
+          retention-days: 14
+  codeql:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+      - uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4

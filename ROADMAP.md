@@ -1,5 +1,7 @@
 # Milestone plan
 
+2026-11-16: Phase 7 published as `983c383`; Phase 8 local controls implemented with scanner-specific verification boundaries. See [evidence](docs/evidence/phase-8.md). Hosted Phase 8 verification and Phase 9 remain outstanding.
+
 2026-11-15: Phase 6 published as `d928e1d`; Phase 7 confirmation and synthetic sensitive-data controls implemented locally. See [evidence](docs/evidence/phase-7.md). Phase 8 has not started.
 
 2026-11-15: Phase 5 published as `de33114`; Phase 6 local object-authorization comparisons implemented with 95 passing tests. See [evidence](docs/evidence/phase-6.md). Phase 7 has not started.

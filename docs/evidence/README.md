@@ -1,5 +1,7 @@
 # Evidence register
 
+Latest local control evidence: [Phase 8](phase-8.md), with [security policy](../security-controls.md). Published Phase 7 commit: `983c383`.
+
 Latest local evidence: [Phase 7 confirmation](phase-7.md); published Phase 6 commit is `d928e1d`.
 
 Latest local evidence: [Phase 6 object authorization](phase-6.md). Phase 5 is published as `de33114`; Phase 6 remains uncommitted.

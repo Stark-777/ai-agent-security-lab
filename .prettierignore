@@ -4,3 +4,5 @@ coverage/
 package-lock.json
 docs/openapi.json
 docs/evidence/npm-audit*.json
+reports/
+docs/evidence/runtime-sbom.json

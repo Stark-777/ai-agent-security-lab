@@ -1,5 +1,7 @@
 # Proposed architecture and data flow
 
+Phase 8 local addition: separate CI security jobs analyze source, advisory metadata, and built image; SBOM/report artifacts are evidence outputs, not runtime enforcement components. Runtime policy remains tested through the existing suite. See [control policy](security-controls.md).
+
 Phase 7: authenticated manager → exact refund proposal → user review → separate confirmation endpoint → synchronous bounded simulated ledger update. RefundService is not a model tool; agent context never receives its tokens. SHA-256 token digests, process-local replay/rate state, and minimized audit events protect this local workflow. See [limits](evidence/phase-7.md).
 
 Phase 6 local comparison: CLI/test constructor composition can omit conversation tenant/owner checks or retrieval tenant checks. HTTP construction always selects hardened defaults. Authentication and retrieval classification remain active in both modes. [F002](findings/F002-broken-object-authorization.md) documents read/write and model-context consequences.

@@ -1,5 +1,9 @@
 # Architectural and security decisions
 
+## D21 — Scanner signal and execution evidence are separate
+
+Add a separate least-permission security workflow with pinned action revisions and explicit scanner versions. Gate high/critical dependencies/image findings, any detected secrets, and two locally tested Semgrep patterns. Keep moderate development advisories visible under D12. CodeQL uploads analysis but successful upload alone does not establish no alerts. Preserve artifacts and no blanket exclusions of intentionally vulnerable source. No automatic suppression or merge-policy changes. Document unexecuted Docker/CodeQL checks instead of treating YAML as successful evidence. See security-controls.md for scope and supply-chain limitations.
+
 ## D20 — Keep confirmation authority outside the agent
 
 Add a separate manager-only RefundService and HTTP proposal/confirmation flow. Bind hashed one-use 60-second tokens to exact transaction and actor; recheck role/tenant/balance/limits at synchronous execution. USD integer cents, maximum 10000 cents/refund, three executions/actor/minute. Model ToolRegistry has no service reference and never receives confirmation tokens. Existing model pending-queue proposals are not automatically converted. Self-confirming CLI controller demonstrates excessive agency even with valid tokens. No production payments or durable/distributed claims. Known-canary output withholding is supplementary; existing context minimization and log exclusion remain primary disclosure controls.
