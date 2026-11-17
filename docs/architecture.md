@@ -1,5 +1,7 @@
 # Proposed architecture and data flow
 
+Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+
 Phase 8 local addition: separate CI security jobs analyze source, advisory metadata, and built image; SBOM/report artifacts are evidence outputs, not runtime enforcement components. Runtime policy remains tested through the existing suite. See [control policy](security-controls.md).
 
 Phase 7: authenticated manager → exact refund proposal → user review → separate confirmation endpoint → synchronous bounded simulated ledger update. RefundService is not a model tool; agent context never receives its tokens. SHA-256 token digests, process-local replay/rate state, and minimized audit events protect this local workflow. See [limits](evidence/phase-7.md).

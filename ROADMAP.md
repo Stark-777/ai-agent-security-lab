@@ -1,38 +1,23 @@
-# Milestone plan
+# Roadmap and current status
 
-2026-11-16: Phase 7 published as `983c383`; Phase 8 local controls implemented with scanner-specific verification boundaries. See [evidence](docs/evidence/phase-8.md). Hosted Phase 8 verification and Phase 9 remain outstanding.
+Phases 0–8 are implemented and published through `ef03551`. Phase 9 portfolio reconciliation and local remediation are in progress. The previous security image gate failed and a CodeQL request-rate-limiting alert was open; changed controls await hosted verification. See [Phase 9 evidence](docs/evidence/phase-9.md).
 
-2026-11-15: Phase 6 published as `d928e1d`; Phase 7 confirmation and synthetic sensitive-data controls implemented locally. See [evidence](docs/evidence/phase-7.md). Phase 8 has not started.
+## Implemented milestones
 
-2026-11-15: Phase 5 published as `de33114`; Phase 6 local object-authorization comparisons implemented with 95 passing tests. See [evidence](docs/evidence/phase-6.md). Phase 7 has not started.
+| Phase | Deliverable                                                                          |
+| ----- | ------------------------------------------------------------------------------------ |
+| 0–2   | Charter, HTTP foundation, identity and conversation authorization                    |
+| 3     | Deterministic agent, schemas, constrained tools, audit trace                         |
+| 4–5   | Tool-authorization comparison and indirect-injection retrieval path                  |
+| 6     | Conversation BOLA and tenant retrieval comparison                                    |
+| 7     | Explicit simulated refund confirmation, replay/transaction limits, disclosure checks |
+| 8     | Scanner workflows, rule tests, dependency policy, SBOMs, actual hosted results       |
+| 9     | Current README/case study, control matrix, interview and career material             |
 
-2026-11-15 update: Phase 4 published as `9e68c23`; Phase 5 local retrieval and indirect-injection comparison implemented. [Evidence and limits](docs/evidence/phase-5.md). Phase 6 has not started.
+## Required follow-up
 
-2026-11-15: Phase 3 published as `06c392d`; Phase 4 local CLI lab completed with 85 passing tests. Its impact is unauthorized refund-request creation, not payment execution; see [scope and evidence](docs/evidence/phase-4.md). Phase 5 has not started.
+Run the security workflow against the smaller image and request throttle, then review any remaining image findings and CodeQL alerts. No severity threshold bypass or broad suppression is authorized as a substitute for remediation.
 
-Local update (2026-11-14): Phase 3 implemented; see [Phase 3](docs/evidence/phase-3.md). Phase 4 has not started. The historical status below describes the published Phase 2 milestone.
+## Deliberately deferred
 
-Each phase ends with changed files, verified commands and results, the security lesson, an interview explanation, the next exact task, and outstanding decisions. Do not claim planned work as implemented evidence.
-
-Current status (2026-11-01): Phases 0–2 implemented, with verification recorded in [Phase 1 evidence](docs/evidence/phase-1.md) and [Phase 2 evidence](docs/evidence/phase-2.md). Docker and hosted GitHub Actions execution remain unverified. Phase 3 has not started.
-
-| Phase                                       | Scope                                                                                                                                                                                                            | Exit evidence                                                                                                                                                                           |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 — Charter                                 | Scenario, identities, architecture, threat hypotheses, decisions                                                                                                                                                 | Documentation links and required content verified; user reviews before Phase 1                                                                                                          |
-| 1 — Foundation                              | Supported pinned runtime, TypeScript/Fastify, configuration, health endpoint, Zod validation, structured errors/logging, redaction, Vitest API tests, ESLint/Prettier, initial OpenAPI, Docker Compose, basic CI | Lint, formatting, type check, and meaningful tests pass locally; container build and loopback smoke check when Docker is available; distinguish local checks from a hosted CI run       |
-| 2 — Identity and tenancy                    | Synthetic local authentication, roles, scoped repositories, private conversations                                                                                                                                | Missing/invalid identity, permitted requests, wrong role, cross-tenant access, and same-tenant non-owner tests                                                                          |
-| 3 — Agent baseline                          | Adapter, deterministic model, three tool schemas, authorization boundary, bounded orchestration, sanitized audit trace                                                                                           | Valid tool execution, malformed/unknown proposals, denied actions, step limits, and audit checks                                                                                        |
-| 4 — Tool authorization and direct injection | Deliberately bypass tool role checks; scripted user-message injection produces forbidden refund proposal; harden and compare                                                                                     | H1 reproduced, shared invariant fails in vulnerable mode and passes in hardened mode; finding and HTTP evidence; no real-LLM effectiveness claim                                        |
-| 5 — Retrieval and indirect injection        | Local document ingestion, classification, scoped lexical retrieval, poisoned article                                                                                                                             | H3 reproduced with synthetic payload; tool authorization contains the action even if the model follows the document; data/instruction labeling is supplementary                         |
-| 6 — Object authorization                    | Deliberately unscoped customer/document/conversation access and scoped remediation                                                                                                                               | H2 reproduced; table-driven role, owner, tenant, missing-object, and model-selected identifier tests                                                                                    |
-| 7 — Agency and disclosure                   | Refund confirmations, limits, replay prevention, scoped capabilities, context filtering, log redaction                                                                                                           | Confirmation binding/expiry/replay tests, balance and rate boundaries, protected canary exclusion from response and logs                                                                |
-| 8 — DevSecOps                               | Evaluate Semgrep, CodeQL, dependency/secret scanning, Trivy and SBOM generation                                                                                                                                  | Recorded runs and representative detections; explicit handling of intentional vulnerable fixtures; no blanket suppression of hardened code; hosted workflows only after authorized push |
-| 9 — Portfolio evidence                      | Reconcile diagrams and threat model with implementation; case study and interview narrative                                                                                                                      | Every claim links to an implemented finding, regression test, or captured result; limitations remain visible                                                                            |
-
-## Deliberate ordering choices
-
-Basic threat modeling starts now and changes with implementation; it is not postponed to the case study. Tenant isolation starts in Phase 2, before the intentional BOLA demonstration in Phase 6. Direct injection joins the tool-authorization lab in Phase 4 so it has concrete impact rather than a cosmetic prompt-override demonstration. Dependency locking and basic CI start in Phase 1; broad scanner integration waits until useful code exists.
-
-## Milestone scope
-
-Phase 1 was approved and completed, followed by explicit approval for Phase 2 on 2026-11-01. Phase 2 implements local authentication and conversation authorization; no agent, RAG, refunds, or vulnerability bypass exists yet. Both roles have identical conversation permissions; action-level support-agent versus manager differences arrive with tools in Phase 3. Public repository publication was authorized on 2026-11-13. No cloud deployment or paid services are part of this milestone. Next implementation milestone: Phase 3.
+Real LLM evaluations, production authentication, external ingestion, durable/distributed storage and idempotency, independent two-person approval, paid services, cloud deployment, and UI. Add these only when their evidence value justifies the scope.

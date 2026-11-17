@@ -23,6 +23,25 @@ afterEach(async () => {
 });
 
 describe('functional API', () => {
+  it('throttles repeated unauthenticated requests without reflecting credentials', async () => {
+    const { app, logs } = setup();
+    const authorization = 'Bearer synthetic-guess-secret';
+    for (let count = 0; count < 100; count++) {
+      const response = await app.inject({
+        url: '/v1/me',
+        headers: { authorization },
+      });
+      expect(response.statusCode).toBe(401);
+    }
+    const limited = await app.inject({
+      url: '/v1/me',
+      headers: { authorization },
+    });
+    expect(limited.statusCode).toBe(429);
+    expect(errorSchema.parse(limited.json()).error.code).toBe('RATE_LIMITED');
+    expect(limited.headers['retry-after']).toBeDefined();
+    expect(limited.body + logs()).not.toContain(authorization);
+  });
   it('returns minimal health and server-owned request IDs', async () => {
     const { app, logs } = setup();
     const response = await app.inject({

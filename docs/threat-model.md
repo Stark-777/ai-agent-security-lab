@@ -1,5 +1,7 @@
 # Initial threat model
 
+Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+
 Phase 8: dependency and CI supply-chain risks now have advisory/scanner/inventory workflow controls. Action hashes and release checksums reduce mutable-reference risk, but Python transitive dependencies and container base tags retain supply-chain limitations. Scanners do not prove object authorization or prompt-injection containment; behavioral tests remain necessary. Hosted execution is pending publication.
 
 Phase 7: controller self-confirmation is reproduced in an isolated CLI. Hardened agent lacks confirmation capabilities; user confirmation runs through a separate authenticated service. Tests cover token substitution, replay, expiry, balance/rate limits and known synthetic disclosure canaries. A compromised manager client remains capable of confirming; no human-cognition proof, two-person approval, durable replay, or comprehensive PII detection is claimed.

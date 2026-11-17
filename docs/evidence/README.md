@@ -1,5 +1,7 @@
 # Evidence register
 
+Current authoritative portfolio summary: [Phase 9 evidence](phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+
 Latest local control evidence: [Phase 8](phase-8.md), with [security policy](../security-controls.md). Published Phase 7 commit: `983c383`.
 
 Latest local evidence: [Phase 7 confirmation](phase-7.md); published Phase 6 commit is `d928e1d`.

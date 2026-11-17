@@ -34,6 +34,7 @@ export async function registerConversationRoutes(
   const agent = new Agent();
   const refunds = new RefundService();
   app.decorateRequest('actor', null);
+  app.addHook('onRequest', app.rateLimit());
   app.addHook('onRequest', async (request) => {
     const names = request.raw.rawHeaders.filter((_, index) => index % 2 === 0);
     if (
@@ -49,7 +50,7 @@ export async function registerConversationRoutes(
     parseInput(emptyQuerySchema, request.query);
   });
   const errors = Object.fromEntries(
-    [400, 401, 403, 404, 409, 413, 415, 500].map((status) => [
+    [400, 401, 403, 404, 409, 413, 415, 429, 500].map((status) => [
       status,
       jsonSchema(errorSchema),
     ]),

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import Fastify, { LogController } from 'fastify';
+import rateLimit from '@fastify/rate-limit';
 import type { DestinationStream } from 'pino';
 import type { AppConfig } from './config.ts';
 import {
@@ -30,6 +31,14 @@ export function buildApp(
     keepAliveTimeout: 5000,
     exposeHeadRoutes: false,
     trustProxy: false,
+  });
+
+  // Bound unauthenticated guesses before identity lookup. This store is local
+  // to the process; a distributed deployment needs a shared store.
+  void app.register(rateLimit, {
+    global: false,
+    max: 100,
+    timeWindow: '1 minute',
   });
 
   app.addHook('onRequest', async (request, reply) => {
@@ -76,6 +85,14 @@ export function buildApp(
       status = 415;
       code = 'UNSUPPORTED_MEDIA_TYPE';
       message = 'Content type is not supported';
+    } else if (
+      error instanceof Error &&
+      'statusCode' in error &&
+      error.statusCode === 429
+    ) {
+      status = 429;
+      code = 'RATE_LIMITED';
+      message = 'Too many requests';
     }
     if (status === 500) request.log.error({ event: 'request_failed', code });
     reply
@@ -93,22 +110,26 @@ export function buildApp(
     });
   });
 
-  app.get(
-    '/health',
-    {
-      preValidation: async (request) => {
-        parseInput(emptyQuerySchema, request.query);
-      },
-      schema: {
-        response: {
-          200: jsonSchema(healthSchema),
-          400: jsonSchema(errorSchema),
+  app.after((error) => {
+    if (error) throw error;
+    app.get(
+      '/health',
+      {
+        preValidation: async (request) => {
+          parseInput(emptyQuerySchema, request.query);
+        },
+        schema: {
+          response: {
+            200: jsonSchema(healthSchema),
+            400: jsonSchema(errorSchema),
+          },
         },
       },
-    },
-    async () => ({ status: 'ok' as const }),
-  );
-
-  void app.register(registerConversationRoutes, { authMode: config.authMode });
+      async () => ({ status: 'ok' as const }),
+    );
+    void app.register(registerConversationRoutes, {
+      authMode: config.authMode,
+    });
+  });
   return app;
 }

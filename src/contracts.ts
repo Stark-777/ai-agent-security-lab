@@ -11,6 +11,7 @@ export const errorSchema = z.strictObject({
       'UNAUTHENTICATED',
       'FORBIDDEN',
       'LIMIT_REACHED',
+      'RATE_LIMITED',
       'NOT_FOUND',
       'PAYLOAD_TOO_LARGE',
       'UNSUPPORTED_MEDIA_TYPE',

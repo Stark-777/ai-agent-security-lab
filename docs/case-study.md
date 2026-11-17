@@ -1,42 +1,59 @@
 # Case study: authorization before agency
 
-## Problem
+## Problem and scenario
 
-An AI-enabled support assistant will eventually retrieve tenant data and propose tool actions. Adding a model before establishing object authorization would make it difficult to distinguish model behavior from an application enforcement failure. This milestone builds and tests the boundary that future agent code must use.
+A support assistant for two fictional software vendors must keep customer conversations and knowledge private while proposing useful actions. Model-selected tool calls and retrieved text are untrusted. Five synthetic identities across Northstar and Harbor exercise support-agent and billing-manager roles.
 
-The implemented application has two fictional tenants, five fixture identities, two roles, and private conversations. Support agents and billing managers may create, read, and append to their own conversations. A manager has no special right to another user's history.
+The engineering question is whether application controls still hold when a model proposes an unsafe action. A deterministic adapter makes that proposal reproducible; it does not establish that a real model would produce it.
 
-## Design decisions
+## Design
 
-- Resolve identity from a server-owned opaque-token lookup. Never derive actor, role, or tenant from request body fields, custom headers, or future model output. The published tokens are synthetic fixtures, not a secure credential system.
-- Enforce tenant AND owner in the repository, rather than only in route handlers. This keeps object authorization in the path when future tools call data access directly.
-- Keep repository state private and return copies. An authorized read must not provide a mutable reference that bypasses write checks.
-- Make inaccessible and missing conversation UUIDs share the same 404 code/message. Do not claim timing equivalence.
-- Use one in-memory process for reproducibility. Durable storage, distributed consistency, and database-level controls require separate work and evidence.
-- Exclude raw user content from routine logs and test synthetic canaries. Field redaction alone would miss secrets embedded in query strings or exception messages.
+One TypeScript/Fastify process keeps the enforcement path inspectable. Server-owned token fixtures resolve actor context. Conversation repositories enforce tenant AND owner, including for managers, and return defensive copies. Retrieval filters tenant/classification before ranking and labels returned text as untrusted data.
 
-Alternatives and tradeoffs are recorded in [DECISIONS.md](../DECISIONS.md).
+The orchestrator validates unknown model output, limits tool calls, passes the authenticated actor separately, and emits allowlisted audit decisions. The model can request a pending refund workflow entry but cannot confirm a transaction.
 
-## Adversarial verification
+A separate manager-only service issues short-lived, one-use confirmation tokens bound to exact transaction details. It rechecks role, tenant, balance, caps, and rate limits at a synchronous simulated ledger update. Tokens stay outside agent context and logs.
 
-The API suite checks every caller/owner combination across the five identities. This includes same-tenant non-owners, same-tenant managers, and managers from the other tenant. Rejected append requests must leave stored history unchanged.
+These choices intentionally prioritize inspectable enforcement over a UI, vector database, cloud deployment, or real payment provider. [Decision records](../DECISIONS.md) describe alternatives and limitations.
 
-Direct repository tests hold owner ID constant while changing tenant. This is necessary because tests using only different users could pass on the ownership predicate even if the tenant check were removed. Other tests attempt to mutate returned objects, forge message roles, submit unknown fields, and exceed capacity limits.
+## Attack, remediation, and verification
 
-Authentication tests cover absent, unknown, malformed, duplicate, and disabled fixture credentials. Header claims cannot change the identity resolved from a token. A live HTTP smoke script verifies the compiled application's owner workflow, foreign-manager denial, log exclusions, startup failure, and clean shutdown.
+### F001: model selection is not permission
 
-See [API tests](../tests/authorization.test.ts), [repository tests](../tests/conversations.test.ts), and the [publication verification](evidence/publication.md).
+The vulnerable tool composition accepts a support agent's schema-valid refund proposal and creates an unauthorized pending request. Hardened policy checks billing-manager role before state change. The same unchanged-queue assertion fails against the vulnerable version and passes against hardened behavior.
 
-## What the evidence supports
+A second replay places hostile instructions inside a retrieved document while the user asks a legitimate support question. The scripted model follows the article even though it is labeled untrusted. Application authorization still denies the action. This is another attack path to the same role defect, not another finding count.
 
-This milestone demonstrates application-level authorization design, abuse-case reasoning, regression testing, input validation, and logging controls in a small multi-tenant API. It connects senior test-engineering skills to concrete AppSec enforcement requirements.
+Evidence: [F001](findings/F001-broken-tool-authorization.md), [indirect narrative](findings/F001-indirect-injection.md), [refund tests](../tests/refund-lab.test.ts), [retrieval tests](../tests/retrieval.test.ts).
 
-It does not yet demonstrate successful prompt injection, RAG attacks, model robustness, tool authorization, production identity security, or a vulnerable-to-hardened remediation narrative. Those claims must wait for implemented scenarios and recorded evidence. Current negative tests exercise a secure baseline; they are not reports of reproduced vulnerabilities.
+### F002: authentication is not object authorization
 
-## Implementation transparency
+The deliberately unscoped repository reads and appends to a Harbor conversation as a Northstar actor. A retrieval variant allows a Harbor document into Northstar model context. Hardened checks enforce conversation tenant/owner and retrieval tenant/classification.
 
-Implementation and documentation were developed with AI-assisted pair programming. The repository exposes the code, design decisions, tests, and verification limits for independent review. Test results establish the behaviors checked, not who understands the design or whether every relevant attack has been covered.
+The suite tests every caller/owner pair, including same-tenant managers, and independently varies tenant while holding owner ID constant. That prevents a correct ownership check from masking a missing tenant predicate. Denied mutations must preserve state.
 
-## Interview discussion
+Evidence: [F002](findings/F002-broken-object-authorization.md), [comparison tests](../tests/bola.test.ts), [HTTP matrix](../tests/authorization.test.ts).
 
-Be prepared to explain the trust assigned to actor context, why two predicates are necessary for object access, how a test could accidentally miss tenant enforcement, and what changes when a model becomes another caller of the repository. The next milestone adds that model boundary while retaining application-owned authorization.
+### F003: a valid token is not a user's decision
+
+An unsafe CLI controller proposes and immediately confirms its own refund. The simulated balance changes without explicit user action. The hardened agent lacks confirmation capability; the separately authenticated user flow binds exact details and rejects replay, expiry, substitution, insufficient balance, and over-limit executions.
+
+This is same-user confirmation, not two-person approval. A compromised authorized client can still confirm.
+
+Evidence: [F003](findings/F003-excessive-agency.md), [confirmation tests](../tests/refunds.test.ts), [replay captures](evidence/phase-7.md).
+
+## CI and evidence judgment
+
+The application suite has 107 tests. Semgrep's two targeted rules have positive/negative detector tests; they are not advertised as BOLA detectors. npm/Trivy use severity gates and report artifacts. CodeQL uploads analysis separately from alert review. The runtime SBOM records package inventory, not security assurance.
+
+The first foundation CI run exposed a real container networking issue: internal container health passed while the host port was unreachable. The corrective commit retained loopback publication, changed network configuration, and added a host-binding assertion. That failure and correction remain documented rather than hidden.
+
+Current hosted status and unverified checks are recorded in [Phase 9](evidence/phase-9.md), with policy in [security controls](security-controls.md).
+
+## Supported claims and limits
+
+The repository supports claims about designing and testing application-level boundaries, reproducing constructed authorization/agency failures, comparing remediations with deterministic assertions, and recording security-control evidence.
+
+It does not support claims of discovering production vulnerabilities, achieving real-model jailbreaks, proving production authentication security, executing payments, completing a comprehensive penetration test, or obtaining ASVS compliance. Framework mappings are specific finding context.
+
+Implementation and writing used AI-assisted pair programming. Independent review, explainable design choices, and reproducible tests are the assessable outputs. A passing test cannot establish the author's understanding; the [interview notes](interview.md) identify the reasoning to defend.
