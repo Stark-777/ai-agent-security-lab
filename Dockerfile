@@ -1,4 +1,4 @@
-FROM node:24.22.2-trixie-slim AS build
+FROM node:24.22.2-alpine3.23 AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -6,13 +6,12 @@ COPY tsconfig.json tsconfig.build.json ./
 COPY src ./src
 RUN npm run build && npm prune --omit=dev --ignore-scripts
 
-FROM debian:trixie-slim AS runtime
+FROM alpine:3.23 AS runtime
 ENV NODE_ENV=production LAB_BIND_MODE=container PORT=3000
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && groupadd --gid 1000 node \
-    && useradd --uid 1000 --gid node --no-create-home node
+RUN apk add --no-cache libatomic libstdc++ \
+    && addgroup -g 1000 node \
+    && adduser -u 1000 -G node -s /bin/sh -D node
 COPY --from=build /usr/local/bin/node /usr/local/bin/node
 COPY --from=build --chown=node:node /app/package.json ./
 COPY --from=build --chown=node:node /app/node_modules ./node_modules

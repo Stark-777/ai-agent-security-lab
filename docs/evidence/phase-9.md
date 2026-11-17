@@ -13,7 +13,9 @@ The precise failing scan report and image SBOM are available in the security run
 
 ## Reconciled deliverables
 
-Local remediation adds a 100-request-per-minute, per-IP limiter before fixture identity lookup. A test confirms the 101st unauthenticated request returns 429 without echoing its credential. The runtime image now uses Debian Trixie and copies only the Node binary from the build stage, removing bundled npm tooling. `npm run check` passed locally with 107 tests. The new image and CodeQL result remain unverified until a hosted run completes; neither fix is claimed to close the findings yet.
+Local remediation adds a 100-request-per-minute, per-IP limiter before fixture identity lookup. A test confirms the 101st unauthenticated request returns 429 without echoing its credential. `npm run check` passed locally with 107 tests. [Hosted run on f508942](https://github.com/Stark-777/ai-agent-security-lab/actions/runs/44007072158) passed source and CodeQL jobs, but the Debian Trixie runtime still failed the image gate: 47 high entries in operating-system packages, 46 without listed fixes. Removing npm eliminated the bundled Node package findings. CodeQL alert 1 remains open on the authentication hook despite the passing runtime throttle test; the analyzer has not recognized that hook ordering, so the alert is being investigated rather than silently dismissed.
+
+A follow-up image change uses Alpine 3.23 and a Node binary copied from the matching official Alpine build stage. This removes unnecessary Debian packages while preserving the Node version and non-root runtime. Its build, health, and vulnerability result require a new hosted run before any claim of remediation.
 
 README now describes the current implemented system instead of accumulating dated banners. Case study, control/evidence matrix, interview notes, and career summaries link claims to enforcement code and tests. The implementation distinguishes three findings from the additional indirect-injection path to F001. The pending agent queue and separate confirmed ledger remain explicitly separate.
 
@@ -23,7 +25,7 @@ No screenshots are fabricated; captured terminal replays and CI run links provid
 
 ## Outstanding work
 
-1. Build and scan the changed image in hosted CI; triage any remaining findings without bypassing the severity gate.
+1. Build and scan the Alpine image in hosted CI; triage any remaining findings without bypassing the severity gate.
 2. Rerun CodeQL and inspect the alert result for the new request limiter.
 3. Preserve scanner failures and corrective history.
 4. Independently rehearse interview explanations and reproduce each invariant. Optional real-model evaluations must be separately labeled and measured.

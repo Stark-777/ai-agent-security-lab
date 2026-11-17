@@ -1,6 +1,6 @@
 # Security control policy
 
-Phase 8 adds `.github/workflows/security.yml`, separate from the functional/security regression workflow. It triggers on push, pull request, and manual dispatch; no scheduled recurring job is enabled. These are workflow definitions until published and run.
+Phase 8 added `.github/workflows/security.yml`, separate from the functional/security regression workflow. It triggers on push, pull request, and manual dispatch; no scheduled recurring job is enabled. Hosted results and later remediation attempts are recorded in [Phase 9 evidence](evidence/phase-9.md).
 
 | Control              | Policy                                                                                                             | What it cannot establish                                                                                |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
