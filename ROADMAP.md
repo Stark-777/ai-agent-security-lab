@@ -1,6 +1,6 @@
 # Roadmap and current status
 
-Phases 0–8 are implemented and published through `ef03551`. Phase 9 portfolio reconciliation and local remediation are in progress. The previous security image gate failed and a CodeQL request-rate-limiting alert was open; changed controls await hosted verification. See [Phase 9 evidence](docs/evidence/phase-9.md).
+Phases 0–9 are implemented and published through `c74bcc9`. The current Foundation and Security workflows pass. The earlier image-gate failures and the reviewed CodeQL rate-limit alert are recorded in [Phase 9 evidence](docs/evidence/phase-9.md).
 
 ## Implemented milestones
 
@@ -16,7 +16,7 @@ Phases 0–8 are implemented and published through `ef03551`. Phase 9 portfolio 
 
 ## Required follow-up
 
-Run the security workflow against the smaller image and request throttle, then review any remaining image findings and CodeQL alerts. No severity threshold bypass or broad suppression is authorized as a substitute for remediation.
+Reproduce the local replays and interview explanations independently. Review future dependency and base-image advisories as they change; the hosted passing result is a dated scan, not a durable security guarantee.
 
 ## Deliberately deferred
 

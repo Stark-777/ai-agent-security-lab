@@ -1,6 +1,6 @@
 # Initial threat model
 
-Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history; do not read historical planned/unimplemented statements as current status.
 
 Phase 8: dependency and CI supply-chain risks now have advisory/scanner/inventory workflow controls. Action hashes and release checksums reduce mutable-reference risk, but Python transitive dependencies and container base tags retain supply-chain limitations. Scanners do not prove object authorization or prompt-injection containment; behavioral tests remain necessary. Hosted execution is pending publication.
 

@@ -1,6 +1,6 @@
 # Authorization matrix
 
-Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history; do not read historical planned/unimplemented statements as current status.
 
 Phase 7: only billing managers may create/confirm simulated USD refund proposals; confirmation additionally requires same actor/tenant, exact transaction, valid unused unexpired token, remaining balance, and transaction/rate limits. Support agents receive 403. Inaccessible proposals are 404; invalid/replayed/expired transactions are 409. The existing agent tool remains a pending-request facility with no execution capability.
 

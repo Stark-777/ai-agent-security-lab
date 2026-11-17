@@ -1,6 +1,6 @@
 # Proposed architecture and data flow
 
-Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history. Hosted security findings remain open; do not read historical planned/unimplemented statements as current status.
+Current authoritative portfolio summary: [Phase 9 evidence](evidence/phase-9.md). Earlier implementation updates below are dated history; do not read historical planned/unimplemented statements as current status.
 
 Phase 8 local addition: separate CI security jobs analyze source, advisory metadata, and built image; SBOM/report artifacts are evidence outputs, not runtime enforcement components. Runtime policy remains tested through the existing suite. See [control policy](security-controls.md).
 

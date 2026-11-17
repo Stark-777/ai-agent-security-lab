@@ -48,7 +48,7 @@ The application suite has 107 tests. Semgrep's two targeted rules have positive/
 
 The first foundation CI run exposed a real container networking issue: internal container health passed while the host port was unreachable. The corrective commit retained loopback publication, changed network configuration, and added a host-binding assertion. That failure and correction remain documented rather than hidden.
 
-Current hosted status and unverified checks are recorded in [Phase 9](evidence/phase-9.md), with policy in [security controls](security-controls.md).
+Current hosted results, corrective history, and the reviewed CodeQL alert are recorded in [Phase 9](evidence/phase-9.md), with policy in [security controls](security-controls.md).
 
 ## Supported claims and limits
 
