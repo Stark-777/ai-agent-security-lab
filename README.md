@@ -12,7 +12,7 @@ This is an AI-assisted learning project with synthetic data. It does not use a r
 ## Review in five minutes
 
 1. Read the [case study](docs/case-study.md): problem, design, attack, fix, verification.
-2. Inspect the [control/evidence matrix](docs/control-matrix.md) and [findings](docs/findings/README.md).
+2. Inspect the [control/evidence matrix](docs/control-matrix.md), [findings](docs/findings/README.md), and [interview rehearsal](docs/interview-rehearsal.md).
 3. Follow [identity resolution](src/identity.ts), [conversation enforcement](src/conversations.ts), [agent/tool policy](src/agent.ts), and [confirmation enforcement](src/refunds.ts).
 4. Review [authorization tests](tests/authorization.test.ts), [BOLA comparisons](tests/bola.test.ts), [retrieval tests](tests/retrieval.test.ts), and [confirmation tests](tests/refunds.test.ts).
 5. Run the commands below and inspect the [evidence register](docs/evidence/README.md).

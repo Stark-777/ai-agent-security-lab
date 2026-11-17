@@ -1,5 +1,7 @@
 # Interview discussion notes
 
+For reproduced outcomes, suggested answers, and questions to practice aloud, see the [interview rehearsal](interview-rehearsal.md).
+
 1. Trace a request from token to object access. Authentication identifies the fixture actor; tenant membership and manager role do not establish conversation ownership.
 2. Explain why checking both tenant and owner matters. A test changing both at once may pass solely because of owner enforcement; hold one predicate constant to exercise the other.
 3. Explain the model boundary. TypeScript types do not validate runtime output. Zod checks shape; role and object policies decide permission; neither is delegated to model text.
